@@ -132,3 +132,31 @@ a:hover {
   font-weight: 600;
   transition: all 0.3s ease-in-out;
 }
+
+.container-fluid {
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.card {
+  width: 18.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.3s ease;
+  color: white;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.card-body {
+  padding: 0 1rem 0.5rem;
+}
+
+.card:hover {
+  transform: translateY(-0.5rem);
+}
