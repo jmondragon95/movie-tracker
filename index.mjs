@@ -16,6 +16,8 @@ const mySQLConnection = await pool.getConnection();
 let apiKey = "683b5907";
 let page = 1;
 
+// NEW BRANCH
+
 //  Setup view engine and public (static) directory
 app.set("view engine", "ejs");
 app.use(express.static("public"));
