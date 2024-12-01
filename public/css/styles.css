@@ -1,6 +1,14 @@
 /* Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Chango&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Sulphur+Point:wght@400;700&display=swap");
 
+:root {
+  --main-red: #a31e1e;
+  --light-gray: #272727;
+  --dark-gray: #222222;
+  --darker-gray: #141414;
+  --sidebar-background-color: #272727;
+}
+
 html,
 body {
   margin: 0;
@@ -20,7 +28,7 @@ body {
 }
 
 .header-container {
-  background-color: #141414;
+  background-color: var(--darker-gray);
   grid-area: header;
   padding-left: 1em;
   display: flex;
@@ -73,6 +81,31 @@ input::placeholder {
   color: #454545;
 }
 
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding-bottom: 1.5em;
+}
+
+.account-options {
+  display: flex;
+  gap: 30px;
+  padding-top: 1em;
+  justify-content: right;
+  padding-right: 4.2em;
+}
+
+.login-btn, .register-btn {
+  width: 100px;
+  padding: 0.5em;
+}
+
+.login-btn {
+  background-color: #a31e1e;
+
+}
+
 .search-btn {
   width: 150px;
   border-radius: 10px;
@@ -96,7 +129,7 @@ input::placeholder {
   padding-left: 1em;
   padding-top: 1.5em;
   /* background-color: #1d2245; */
-  background-color: #272727;
+  background-color: var(--light-gray);
   height: 100%;
   width: 200px;
 }
@@ -136,7 +169,7 @@ a:hover {
 
 .container-fluid {
   justify-content: center;
-  background-color: #222222;
+  background-color: var(--dark-gray);
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
