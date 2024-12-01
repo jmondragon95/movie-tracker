@@ -6,7 +6,9 @@
   --light-gray: #272727;
   --dark-gray: #222222;
   --darker-gray: #141414;
-  --sidebar-background-color: #272727;
+  --main-font: "Inter", sans-serif;
+  --logo-font: "Chango", sans-serif;
+
 }
 
 html,
@@ -38,7 +40,7 @@ body {
 .logo {
   color: white;
 
-  font-family: "Chango", sans-serif;
+  font-family: var(--logo-font);
   display: flex;
   flex-direction: row;
   justify-content: left;
@@ -98,11 +100,28 @@ input::placeholder {
 
 .login-btn, .register-btn {
   width: 100px;
-  padding: 0.5em;
+  padding: 0.7em;
+  color: white;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--main-font);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .login-btn {
-  background-color: #a31e1e;
+  background-color: var(--light-gray);
+
+}
+
+.register-btn {
+  background-color: var(--main-red);
+}
+
+.login-btn:hover, .register-btn:hover {
+  background-color: black;
+  transition: all 0.5s ease-in-out;
 
 }
 
