@@ -97,7 +97,7 @@ input::placeholder {
   padding-top: 1.5em;
   /* background-color: #1d2245; */
   background-color: #272727;
-  height: 89.7vh;
+  height: 100%;
   width: 200px;
 }
 
