@@ -24,6 +24,10 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/trending", (req, res) => {
+  res.render("trending");
+});
+
 app.get("/watchlist", (req, res) => {
   res.render("watchlist");
 });
@@ -31,6 +35,7 @@ app.get("/watchlist", (req, res) => {
 app.get("/favorites", (req, res) => {
   res.render("favorites");
 });
+
 
 //  Retrieves movies from API and stores in database
 app.get("/movies", async (req, res) => {
