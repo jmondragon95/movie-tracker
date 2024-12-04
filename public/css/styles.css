@@ -112,7 +112,6 @@ input::placeholder {
 
 .login-btn {
   background-color: var(--light-gray);
-
 }
 
 .register-btn {
@@ -122,7 +121,6 @@ input::placeholder {
 .login-btn:hover, .register-btn:hover {
   background-color: black;
   transition: all 0.5s ease-in-out;
-
 }
 
 .search-btn {
@@ -133,7 +131,6 @@ input::placeholder {
   color: white;
   font-weight: 500;
   font-size: 1rem;
-
   font-family: "Inter", sans-serif;
 }
 
@@ -196,10 +193,14 @@ a:hover {
 }
 
 .card {
-  width: 18.75rem;
+  width: 12rem;
   background-color: rgba(255, 255, 255, 0.1);
   transition: 0.3s ease;
   color: white;
+}
+
+.card img{
+  width: 12rem;
 }
 
 .card-title {
@@ -212,4 +213,14 @@ a:hover {
 
 .card:hover {
   transform: translateY(-0.5rem);
+}
+
+.modal-body {
+  background-color: rgb(201, 196, 195);
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.modal-body img{
+  border-style: solid;
+  border-width: 2px;
 }

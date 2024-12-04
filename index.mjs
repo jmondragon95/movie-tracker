@@ -130,6 +130,17 @@ app.get("/movies", async (req, res) => {
   res.json(movieRows);
 });
 
+//local api to display movie info on modal
+//sending data in JSON format
+app.get('/api/movies/:id', async (req, res) => {
+  let movieId = req.params.id;
+  let sql = `SELECT *
+            FROM movies
+            WHERE movie_id = ?`;           
+  let [rows] = await mySQLConnection.query(sql, [movieId]);
+  res.send(rows)
+});
+
 app.listen(3000, () => {
   console.log("server started");
 });
