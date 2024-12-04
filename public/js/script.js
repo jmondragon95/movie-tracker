@@ -61,6 +61,8 @@ function renderMovies(movies) {
     } else {
       movieCard.innerHTML = `<img src="${movie.poster_url}" alt="${movie.title}">`;
     }
+
+    /*
     if (movie.description === "N/A") {
       movieCard.innerHTML += `<div class="card-body">
                   <h3 class="card-title">${movie.title}</h3>
@@ -71,7 +73,44 @@ function renderMovies(movies) {
                 <h3 class="card-title">${movie.title}</h3>
                 <p class="card-text">${movie.description}</p>
             </div>`;
-    }
+    }*/
+
+   //make movie titles clickable
+    movieCard.innerHTML += `<a href="#" class="movieAnchor" id="${movie.movie_id}">${movie.title}</a>`;
     moviesContainer.appendChild(movieCard);
   });
+
+}
+
+//Event listener, must go after rendering movies to select movie anchors
+let movieInfoLinks = document.querySelectorAll(".movieAnchor");
+for (let movieInfoLink of movieInfoLinks) {
+  movieInfoLink.addEventListener("click", getMovieInfo)
+}
+
+//function to display movie info on modal
+async function getMovieInfo() { 
+  console.log(this.id);
+  var myModal = new bootstrap.Modal(document.getElementById('movieModal'));
+  myModal.show();
+  let url = `/api/movies/${this.id}`;
+  let response = await fetch(url);
+  let data = await response.json();
+  console.log(data);
+
+  //convert date
+  const releasedOn = new Date(data[0].release_date);
+
+  //display api data for movies
+  let movieInfo = document.querySelector("#movieInfo");
+  movieInfo.innerHTML = `<h1> ${data[0].title}</h1>`;
+  movieInfo.innerHTML += `<img src="${data[0].poster_url}" width="auto"><br><br>`; 
+  movieInfo.innerHTML += `<div><strong>Rated: </strong>${data[0].age_rating} </div>`;
+  movieInfo.innerHTML += `<div><strong>Actors: </strong>${data[0].actors} </div>`;
+  movieInfo.innerHTML += `<div><strong>Runtime: </strong>${data[0].runtime} </div>`;
+  movieInfo.innerHTML += `<div><strong>Released Date: </strong>${releasedOn.toLocaleDateString()} </div>`;
+  movieInfo.innerHTML += `<div><strong>Director: </strong>${data[0].director} </div>`;
+  movieInfo.innerHTML += `<div><strong>Description: </strong>${data[0].description} </div>`;
+  movieInfo.innerHTML += `<div><strong>IMDb-Rating: </strong>${data[0].imdb_rating} </div>`;
+  movieInfo.innerHTML += `<div><strong>Rotten-Tomatoes-Rating: </strong>${data[0].rotten_tomatoes_rating} </div>`;
 }
