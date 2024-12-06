@@ -1,14 +1,20 @@
 //  Imports
 import express from "express";
 import mysql from "mysql2/promise";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import configDotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import crypto from "crypto";
 
 //  Global Variables
+configDotenv.config();  //  ALLOWS US TO USE .ENV FILE VARIABLES
 const app = express();
 const pool = mysql.createPool({
-  host: "jmondragon.tech",
-  user: "jmondrag_movieWatcher",
-  password: "CSUMB-cst336@",
-  database: "jmondrag_movies",
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
   connectionLimit: 10,
   waitForConnections: true,
 });
@@ -19,6 +25,9 @@ let page = 1;
 //  Setup view engine and public (static) directory
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(express.urlencoded({extended: true}));  //  ALLOWS US TO READ BODY FROM POST REQUESTS
+app.use(express.json());  //  ALLOWS ROUTES TO READ JSON
+app.use(cookieParser());  //  ALLOWS READ/WRITE OF COOKIES
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -35,6 +44,26 @@ app.get("/watchlist", (req, res) => {
 app.get("/favorites", (req, res) => {
   res.render("favorites");
 });
+
+//  LOGIN ROUTES
+
+app.get('/login', (req, res) => {
+  const accessToken = req.cookies.accessToken;
+  if (accessToken) {
+    res.redirect('/welcome');
+  } else {
+    res.render('login');
+  }
+});
+
+app.get('/logout', (req, res) => {
+  console.log('clearing cookies');
+  //  CLEARING COOKIES
+  res.clearCookie('accessToken', {httpOnly: true});
+  res.clearCookie('refreshToken', {httpOnly: true});
+  res.redirect('/login');
+});
+
 
 
 //  Retrieves movies from API and stores in database
