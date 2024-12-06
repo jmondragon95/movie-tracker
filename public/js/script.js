@@ -27,6 +27,8 @@ window.addEventListener("scroll", () => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', showToast);
+
 
 // Global Variables
 
@@ -37,13 +39,26 @@ const moviesContainer = document.getElementById("movies-container");
 
 const storedMovies = JSON.parse(localStorage.getItem("movies")) || [];
 
-if (storedMovies.length > 0) {
+if (storedMovies.length > 0 && moviesContainer) {
   renderMovies(storedMovies);
 } else {
   fetchMovies();
 }
 
 //  Functions
+
+function showToast() {
+  const toastElement = document.getElementById('toastMessage');
+  //  If toast element is found on page, continue
+  if (toastElement) {
+    const toastMessageElement = document.getElementById('toastMessage');
+    //  If toast message has text inside, show it
+    if (toastMessageElement.textContent.trim() !== '') {
+      const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastElement);
+      toastBootstrap.show();
+    }
+  }
+}
 
 async function fetchMovies() {
   //  If we are loading, cancel this extra fetch function
@@ -63,7 +78,9 @@ async function fetchMovies() {
       const updatedMovies = [...storedMovies, ...movies];
       localStorage.setItem("movies", JSON.stringify(updatedMovies));
       //  Render new movies
-      renderMovies(movies);
+      if (moviesContainer) {
+        renderMovies(movies);
+      }
     } else {
       console.log("No more movies available.");
     }
@@ -126,7 +143,7 @@ async function getMovieInfo() {
   //display api data for movies
   let movieInfo = document.querySelector("#movieInfo");
   movieInfo.innerHTML = `<h1> ${data[0].title}</h1>`;
-  movieInfo.innerHTML += `<img src="${data[0].poster_url}" width="auto"><br><br>`; 
+  movieInfo.innerHTML += `<img src="${data[0].poster_url}" alt="${data[0].poster_url}" width="auto"><br><br>`;
   movieInfo.innerHTML += `<div><strong>Rated: </strong>${data[0].age_rating} </div>`;
   movieInfo.innerHTML += `<div><strong>Actors: </strong>${data[0].actors} </div>`;
   movieInfo.innerHTML += `<div><strong>Runtime: </strong>${data[0].runtime} </div>`;

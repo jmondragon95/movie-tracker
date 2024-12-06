@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 import crypto from "crypto";
 
 //  Global Variables
-configDotenv.config();  //  ALLOWS US TO USE .ENV FILE VARIABLES
+configDotenv.config();  //  allows us to use .env file variables
 const app = express();
 const pool = mysql.createPool({
   host: process.env.DATABASE_HOST,
@@ -25,9 +25,9 @@ let page = 1;
 //  Setup view engine and public (static) directory
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(express.urlencoded({extended: true}));  //  ALLOWS US TO READ BODY FROM POST REQUESTS
-app.use(express.json());  //  ALLOWS ROUTES TO READ JSON
-app.use(cookieParser());  //  ALLOWS READ/WRITE OF COOKIES
+app.use(express.urlencoded({extended: true}));  //  Allows us to read body from post requests
+app.use(express.json());  //  Allows routes to read json
+app.use(cookieParser());  //  Allows read/write of cookies
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -52,7 +52,8 @@ app.get('/login', (req, res) => {
   if (accessToken) {
     res.redirect('/welcome');
   } else {
-    res.render('login');
+    const { message, border } = req.query;
+    res.render('login', {message, border});
   }
 });
 
@@ -65,7 +66,32 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  res.render('register');
+  const { message, border } = req.query;
+  res.render('register', {message, border});
+});
+
+app.post('/register', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const confirmedPassword = req.body.confirmPassword;
+  console.log(password, confirmedPassword);
+  if (password === confirmedPassword) {
+    console.log('passwords match');
+    //  Hash password: prepare for insertion into database
+    const hashedPassword = await bcrypt.hash(password, 10);
+    //  Set up insert sql statement and parameters
+    const insertUserSQL = 'INSERT INTO users (username, hashed_password) VALUES (?, ?)';
+    const params = [username, hashedPassword];
+    try {
+      await mySQLConnection.query(insertUserSQL, params);
+      return res.redirect('/login?message=Registration successful&border=text-bg-success');
+    } catch (error) {
+      console.log('Error occurred while inserting user to database', error);
+      return res.redirect(`/register?message=${error}&border=text-bg-danger`);
+    }
+  } else {
+    return res.redirect('/register?message=Passwords do not match&border=text-bg-warning');
+  }
 });
 
 //  Retrieves movies from API and stores in database

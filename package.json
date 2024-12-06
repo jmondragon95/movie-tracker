@@ -6,7 +6,7 @@
   "main": "index.mjs",
   "scripts": {
     "start": "nodemon index.mjs",
-    "watch": "browser-sync start --proxy localhost:3000 --files 'views/**/*.ejs, /public/**/*.*'"
+    "watch": "browser-sync start --proxy localhost:3000 --files 'views/**/*.ejs, public/**/*.*'"
   },
   "keywords": [],
   "author": "",
