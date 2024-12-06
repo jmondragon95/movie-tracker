@@ -156,6 +156,7 @@ input::placeholder {
   gap: 1em;
   padding-top: 0.5em;
   padding-left: 0.5em;
+  padding-bottom: 1em;
   font-size: 1.2rem;
 }
 

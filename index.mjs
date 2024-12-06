@@ -64,7 +64,9 @@ app.get('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-
+app.get('/register', (req, res) => {
+  res.render('register');
+});
 
 //  Retrieves movies from API and stores in database
 app.get("/movies", async (req, res) => {
