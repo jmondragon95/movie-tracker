@@ -15,7 +15,11 @@
 
       <!-- Account Buttons -->
       <div class="account-options">
+          <% if (typeof userId != 'undefined') { %>
+          <a href="/logout" class="btn login-btn">Log out</a>
+          <% } else { %>
         <a href="/login" class="btn login-btn">Sign in</a>
+              <% } %>
         <a href="/register" class="btn register-btn">Register</a>
       </div>
 

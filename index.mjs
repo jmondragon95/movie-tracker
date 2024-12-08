@@ -1,4 +1,5 @@
 //  Imports
+
 import express from "express";
 import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
@@ -8,6 +9,7 @@ import cookieParser from "cookie-parser";
 import crypto from "crypto";
 
 //  Global Variables
+
 configDotenv.config();  //  allows us to use .env file variables
 const app = express();
 const pool = mysql.createPool({
@@ -23,37 +25,196 @@ let apiKey = "683b5907";
 let page = 1;
 
 //  Setup view engine and public (static) directory
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));  //  Allows us to read body from post requests
 app.use(express.json());  //  Allows routes to read json
 app.use(cookieParser());  //  Allows read/write of cookies
 
-app.get("/", (req, res) => {
-  res.render("index");
+//  Functions
+
+async function authenticateToken(req, res, next) {
+  //  RETRIEVE COOKIE FROM REQUEST COOKIES
+  const accessToken = req.cookies.accessToken;
+  if (accessToken) {
+    //  ACCESS TOKEN IS FOUND, LETS TRY VERIFYING IT
+    try {
+      // IF VERIFICATION SUCCEEDS (NOT EXPIRED AND IS VALID, GO NEXT
+      const accessTokenPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+      const userId = accessTokenPayload.userId;
+      req.userId = userId;
+      next();
+    } catch (error) {
+      //  IF TOKEN IS EXPIRED, THEN USE REFRESH TOKEN TO RETRIEVE NEW (ACCESS AND REFRESH) TOKENS
+      if (error.name === 'TokenExpiredError') {
+        //  RETRIEVE REFRESH TOKEN FROM REQUEST COOKIES
+        const refreshToken = req.cookies.refreshToken;
+        if (refreshToken) {
+          //  REFRESH TOKEN IS FOUND, LETS TRY VERIFYING IT (NOT USED AND IS VALID)
+          try {
+            //  VERIFIES REFRESH TOKEN AND STORES PAYLOAD IN VARIABLE
+            const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+            //  LET US VERIFY THAT THIS REFRESH TOKEN HASN'T BEEN USED ALREADY.
+            if (await verifyRefreshToken(refreshToken)) {
+              const userId = refreshTokenPayload.userId;
+              //  RETURNS ARRAY [ACCESS TOKEN, REFRESH TOKEN]
+              const newTokens = await generateNewTokens(userId);
+              const newAccessToken = newTokens[0];
+              const newRefreshToken = newTokens[1];
+              //  SETTING ACCESS/REFRESH TOKEN IN COOKIES
+              res.cookie('accessToken', newAccessToken, {httpOnly: true});
+              res.cookie('refreshToken', newRefreshToken, {httpOnly: true});
+              req.userId = userId;
+              return next();
+            } else {
+              console.log('line 68: verifyRefreshToken returned false');
+            }
+          } catch (error) {
+            console.log('Error occurred while verifying refresh token', error);
+          }
+        } else {
+          //  IF REFRESH TOKEN IS NOT FOUND, REDIRECT TO LOGIN PAGE
+          console.log('No refresh token');
+        }
+
+      } else {
+        console.log('error with token verification:', error);
+      }
+      console.log('clearing cookies');
+      //  CLEARING COOKIES
+      res.clearCookie('accessToken', {httpOnly: true});
+      res.clearCookie('refreshToken', {httpOnly: true});
+      return res.redirect('/login');
+    }
+  } else {
+    //  NO ACCESS TOKEN
+    console.log('No access token');
+    return res.redirect('/login');
+  }
+}
+
+async function verifyRefreshToken(refreshToken) {
+  //  HASH THE REFRESH TOKEN
+  const hashedRefreshToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  //  SQL TO FIND REFRESH TOKEN IN DATABASE
+  const retrieveRefreshTokenSQL = 'SELECT * FROM refresh_tokens WHERE refresh_token = ? AND is_used = FALSE';
+  try {
+    const [refreshTokenFromDB] = await sqlConnection.query(retrieveRefreshTokenSQL, [hashedRefreshToken]);
+    console.log('line 91:', refreshTokenFromDB);
+    if (refreshTokenFromDB.length > 0) {
+      //  SET REFRESH TOKEN AS USED IN DATABASE
+      const setRefreshTokenUsedSQL = 'UPDATE refresh_tokens SET is_used = TRUE WHERE refresh_token = ?';
+      try {
+        console.log('line 100: updating refresh token in db', hashedRefreshToken);
+        await sqlConnection.query(setRefreshTokenUsedSQL, [hashedRefreshToken]);
+        return true;
+      } catch (error) {
+        console.log('line 102', error);
+        return false;
+      }
+    } else {
+      console.log('line 107: refreshToken not found in db');
+      return false;
+    }
+  } catch (error) {
+    console.log('line 106', error);
+    return false;
+  }
+}
+
+async function generateNewTokens(userId) {
+  //  GENERATE USER OBJECT TO STORE AS PAYLOAD IN TOKENS
+  const userObject = {'userId': userId};
+  //  GENERATE NEW ACCESS/REFRESH TOKENS
+  const newAccessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15s'});
+  const newRefreshToken = jwt.sign(userObject, process.env.REFRESH_TOKEN_SECRET);
+  //  STORE NEW REFRESH TOKEN IN DATABASE
+  const hashedRefreshToken = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
+  const insertRefreshTokenSQL = 'INSERT INTO refresh_tokens (user_id, refresh_token) ' +
+      'VALUES (?, ?)';
+  try {
+    await sqlConnection.query(insertRefreshTokenSQL, [userId, hashedRefreshToken]);
+  } catch (error) {
+    console.log('generateNewTokens, Error occurred while inserting hashed refresh token:', error);
+    return [];
+  }
+  //  STORE IN ARRAY TO RETURN TO AUTHENTICATE TOKENS
+  const newTokens = [];
+  newTokens.push(newAccessToken);
+  newTokens.push(newRefreshToken);
+  return newTokens;
+}
+
+//  Get Routes
+
+app.get("/", authenticateToken, (req, res) => {
+  const userId = req.userId;
+  const { message, border } = req.query;
+  res.render("index", {message, border, userId});
 });
+
 
 app.get("/trending", (req, res) => {
   res.render("trending");
 });
 
-app.get("/watchlist", (req, res) => {
-  res.render("watchlist");
+app.get("/watchlist", authenticateToken, (req, res) => {
+  const userId = req.userId;
+  const { message, border } = req.query;
+  res.render("watchlist", {message, border, userId});
 });
 
-app.get("/favorites", (req, res) => {
-  res.render("favorites");
+app.get("/favorites", authenticateToken, (req, res) => {
+  const userId = req.userId;
+  const { message, border } = req.query;
+  res.render("favorites", {message, border, userId});
 });
 
-//  LOGIN ROUTES
+//  Login routes
 
 app.get('/login', (req, res) => {
   const accessToken = req.cookies.accessToken;
   if (accessToken) {
-    res.redirect('/welcome');
+    res.redirect('/');
   } else {
     const { message, border } = req.query;
     res.render('login', {message, border});
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const findUserSQL = 'SELECT * FROM users WHERE username = ?';
+  try {
+    const [userRow] = await mySQLConnection.query(findUserSQL, [username]);
+    const user = userRow[0];
+    const hashedPassword = user.hashed_password;
+    const match = await bcrypt.compare(password, hashedPassword);
+    if (match) {
+      const userId = user.user_id;
+      const userObject = {'userId': userId};
+      const accessToken = jwt.sign(userObject, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
+      const refreshToken = jwt.sign(userObject, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '30d'});
+      const hashedRefreshToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
+      const insertRefreshTokenSQL = 'INSERT INTO refresh_tokens (user_id, refresh_token) ' +
+          'VALUES (?, ?)';
+      try {
+        await mySQLConnection.query(insertRefreshTokenSQL, [userId, hashedRefreshToken]);
+      } catch (error) {
+        console.log('Error occurred while inserting refresh token to database', error);
+        return res.redirect(`/login?message=${error}&border=text-bg-warning`);
+      }
+      res.cookie('accessToken', accessToken, {httpOnly: true});
+      res.cookie('refreshToken', refreshToken, {httpOnly: true});
+      return res.redirect('/?message=Login successful&border=text-bg-success');
+    } else {
+      return res.redirect('/login?message=Incorrect password&border=text-bg-danger');
+    }
+  } catch (error) {
+    console.log('Error occurred while retrieving user from database', error);
+    return res.redirect(`/login?message=Incorrect username&border=text-bg-warning`);
   }
 });
 
