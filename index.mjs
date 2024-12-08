@@ -53,7 +53,7 @@ app.get("/movies", async (req, res) => {
 
   if (movieRows.length === 0) {
     while (movieRows.length === 0) {
-      console.log("Page:", page);
+    //  console.log("Page:", page);
       // console.log("No movies found in jmondrag_movies");
       //  Retrieve first set of movies from API
       let movieSetUrl = `https://www.omdbapi.com/?apikey=${apiKey}&s=Batman&type=movie&page=${page}`;
@@ -63,7 +63,7 @@ app.get("/movies", async (req, res) => {
       if (movieSetData.Search) {
         let count = 1;
         for (let movie of movieSetData.Search) {
-          console.log("movie:", count);
+        //  console.log("movie:", count);
           //  Retrieve individual movie information
           let movieUrl = `https://www.omdbapi.com/?apikey=${apiKey}&i=${movie.imdbID}`;
           let movieResponse = await fetch(movieUrl);
@@ -79,7 +79,7 @@ app.get("/movies", async (req, res) => {
           let metacriticRating =
             movieData.Ratings.find((r) => r.Source === "Metacritic")?.Value ||
             null;
-          console.log(movieData.Title, movieData.Released);
+         // console.log(movieData.Title, movieData.Released);
           let releaseDate;
           if (movieData.Released === "N/A") {
             releaseDate = null;
@@ -95,8 +95,14 @@ app.get("/movies", async (req, res) => {
             "movie_id, title, actors, genre, runtime, age_rating, imdb_rating," +
             "rotten_tomatoes_rating, metacritic_rating, poster_url, release_date, director, " +
             "description) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+            "ON DUPLICATE KEY UPDATE " +
+            "title = VALUES(title), actors = VALUES(actors), genre = VALUES(genre), " +
+            "runtime = VALUES(runtime), age_rating = VALUES(age_rating), imdb_rating = VALUES(imdb_rating), " +
+            "rotten_tomatoes_rating = VALUES(rotten_tomatoes_rating), metacritic_rating = VALUES(metacritic_rating), " +
+            "poster_url = VALUES(poster_url), release_date = VALUES(release_date), director = VALUES(director), " +
+            "description = VALUES(description);";
+      
           await mySQLConnection.execute(insertMovieSQL, [
             movieData.imdbID,
             movieData.Title,
@@ -119,10 +125,11 @@ app.get("/movies", async (req, res) => {
         break;
       }
       page++;
+
       //  Retry search from database now that it is populated.
-      let moviesResult = await mySQLConnection.query(movieSearchSQL, [
-        lastMovieID,
+      moviesResult = await mySQLConnection.query(movieSearchSQL, [
         limit,
+        offset,     
       ]);
       movieRows = moviesResult[0];
     }

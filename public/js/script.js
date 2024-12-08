@@ -37,6 +37,7 @@ async function fetchMovies() {
       //  Update offset and store locally
       offset += movies.length;
       localStorage.setItem("offset", offset);
+
       //  Merge new movies with stored ones and save to local storage
       const updatedMovies = [...storedMovies, ...movies];
       localStorage.setItem("movies", JSON.stringify(updatedMovies));
@@ -53,6 +54,8 @@ async function fetchMovies() {
 }
 
 function renderMovies(movies) {
+
+  //render the filtered movies
   movies.forEach((movie) => {
     const movieCard = document.createElement("div");
     movieCard.className = "card text-bg-secondary";
@@ -62,30 +65,22 @@ function renderMovies(movies) {
       movieCard.innerHTML = `<img src="${movie.poster_url}" alt="${movie.title}">`;
     }
 
-    /*
-    if (movie.description === "N/A") {
-      movieCard.innerHTML += `<div class="card-body">
-                  <h3 class="card-title">${movie.title}</h3>
-                  <p class="card-text">Description unavailable</p>
-                                  </div>`;
-    } else {
-      movieCard.innerHTML += `<div class="card-body">
-                <h3 class="card-title">${movie.title}</h3>
-                <p class="card-text">${movie.description}</p>
-            </div>`;
-    }*/
-
    //make movie titles clickable
     movieCard.innerHTML += `<a href="#" class="movieAnchor" id="${movie.movie_id}">${movie.title}</a>`;
     moviesContainer.appendChild(movieCard);
-  });
 
+  });
+  //add event listener everytime new movies are rendered.
+  addMovieEventListeners();
 }
 
-//Event listener, must go after rendering movies to select movie anchors
-let movieInfoLinks = document.querySelectorAll(".movieAnchor");
-for (let movieInfoLink of movieInfoLinks) {
-  movieInfoLink.addEventListener("click", getMovieInfo)
+// Event listener function to add to the movie anchors
+function addMovieEventListeners(){
+
+  const movieInfoLinks = document.querySelectorAll(".movieAnchor");
+  for (let movieInfoLink of movieInfoLinks) {
+    movieInfoLink.addEventListener("click", getMovieInfo);
+  }
 }
 
 //function to display movie info on modal
