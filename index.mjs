@@ -63,8 +63,14 @@ async function authenticateToken(req, res, next) {
               const newAccessToken = newTokens[0];
               const newRefreshToken = newTokens[1];
               //  SETTING ACCESS/REFRESH TOKEN IN COOKIES
-              res.cookie('accessToken', newAccessToken, {httpOnly: true});
-              res.cookie('refreshToken', newRefreshToken, {httpOnly: true});
+              res.cookie('accessToken', newAccessToken, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60
+              });
+              res.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 24 * 30
+              });
               req.userId = userId;
               return next();
             } else {
@@ -206,8 +212,14 @@ app.post('/login', async (req, res) => {
         console.log('Error occurred while inserting refresh token to database', error);
         return res.redirect(`/login?message=${error}&border=text-bg-warning`);
       }
-      res.cookie('accessToken', accessToken, {httpOnly: true});
-      res.cookie('refreshToken', refreshToken, {httpOnly: true});
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60
+      });
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 30
+      });
       return res.redirect('/?message=Login successful&border=text-bg-success');
     } else {
       return res.redirect('/login?message=Incorrect password&border=text-bg-danger');
