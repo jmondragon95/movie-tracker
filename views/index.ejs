@@ -12,6 +12,18 @@
     <div class="content-container">
       <h2>All Movies</h2>
       <%- include('partials/movies.ejs') %>
+      <div class="searchRender">
+        <% for (i=0; i < searchMovies.length; i++) { %>
+           <div class="searchMovie">
+             <% if (searchMovies[i].poster_url === "N/A") { %>
+               <img src="img/placeholder.png" alt="<%=searchMovies[i].title%>"><br>
+             <% } else {%>
+               <img src="<%=searchMovies[i].poster_url%>" alt="<%=searchMovies[i].title%>"><br>
+             <% }%>
+             <a href="#" class="movieAnchor" id="<%=searchMovies[i].movie_id%>"><%=searchMovies[i].title%></a>
+           </div>
+        <% } %>
+      </div>
       <!-- Modal -->
       <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -24,9 +36,7 @@
               <div id="movieInfo"></div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Rate</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add to Watchlist</button>
-              <button type="button" class="btn btn-primary">Add to Favorites</button>
+              <!--generated forms and buttons on footer with javascript-->
             </div>
           </div>
         </div>

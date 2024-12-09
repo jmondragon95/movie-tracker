@@ -15,6 +15,7 @@
 
       <!-- Account Buttons -->
       <div class="account-options">
+        <div class="userNameTag"></div>
           <% if (typeof userId != 'undefined') { %>
           <a href="/logout" class="btn login-btn">Log out</a>
           <% } else { %>
@@ -25,13 +26,15 @@
 
       <!-- Search bar -->
       <div class="search-container">
-        <input
-          type="search"
-          id="search-bar"
-          name="search"
-          placeholder="Search for a movie..."
-        />
-        <button class="search-btn">Search</button>
+        <form action="/search">
+          <input
+            type="search"
+            id="search-bar"
+            name="search"
+            placeholder="Search for a movie..."
+          />
+          <button class="search-btn">Search</button>
+        </form>
       </div>
 
   </div> <!-- end right-col -->

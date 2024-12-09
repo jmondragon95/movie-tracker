@@ -1,3 +1,4 @@
+
 //  BOOTSTRAP VALIDATION FUNCTION
 
 (() => {
@@ -28,7 +29,8 @@ window.addEventListener("scroll", () => {
 });
 
 document.addEventListener('DOMContentLoaded', showToast);
-
+//adde event listener for watchlist and favorites
+addMovieEventListeners();
 
 // Global Variables
 
@@ -94,7 +96,7 @@ async function fetchMovies() {
 
 function renderMovies(movies) {
 
-  //render the filtered movies
+  //render movies
   movies.forEach((movie) => {
     const movieCard = document.createElement("div");
     movieCard.className = "card text-bg-secondary";
@@ -122,6 +124,7 @@ function addMovieEventListeners(){
   }
 }
 
+
 //function to display movie info on modal
 async function getMovieInfo() { 
   console.log(this.id);
@@ -135,7 +138,7 @@ async function getMovieInfo() {
   //convert date
   const releasedOn = new Date(data[0].release_date);
 
-  //display api data for movies
+  //display api data for movie modal
   let movieInfo = document.querySelector("#movieInfo");
   movieInfo.innerHTML = `<h1> ${data[0].title}</h1>`;
   movieInfo.innerHTML += `<img src="${data[0].poster_url}" alt="${data[0].poster_url}" width="auto"><br><br>`;
@@ -147,4 +150,15 @@ async function getMovieInfo() {
   movieInfo.innerHTML += `<div><strong>Description: </strong>${data[0].description} </div>`;
   movieInfo.innerHTML += `<div><strong>IMDb-Rating: </strong>${data[0].imdb_rating} </div>`;
   movieInfo.innerHTML += `<div><strong>Rotten-Tomatoes-Rating: </strong>${data[0].rotten_tomatoes_rating} </div>`;
+  let modalFooter = document.querySelector(".modal-footer");
+  modalFooter.innerHTML = `<form method="POST" action="/rateMovie">
+                              <button type="submit" name="btnRateMovie"  id="btnRateMovie" value="${data[0].movie_id}" >Rate</button>
+                              </form>`;
+  modalFooter.innerHTML +=`<form method="POST" action="/addToWatchlist">
+                              <button type="submit" name="btnAddWatchlist" id="btnAddWatchList" value="${data[0].movie_id}" >Add to Watchlist</button>
+                              </form>`;
+  modalFooter.innerHTML +=`<form method="POST" action="/addToFavorites">
+                            <button type="submit" name="btnAddFavorite" id="btnAddFavorite" value="${data[0].movie_id}" >Add to Favorites</button>
+                            </form>`;
 }
+
