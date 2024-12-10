@@ -231,7 +231,7 @@ a:hover {
   text-align: center;
 }
 
-.watchlistRender, .favRender{
+.watchlistRender, .favRender, .searchRender{
   justify-content: center;
   background-color: var(--dark-gray);
   display: flex;
@@ -241,25 +241,25 @@ a:hover {
 
 }
 
-.watchlistMovie, .favMovie{
+.watchlistMovie, .favMovie, .searchMovie{
   width: 12rem;
   background-color: rgba(255, 255, 255, 0.1);
   transition: 0.3s ease;
   color: white;
 }
 
-.watchlistMovie img, .favMovie img{
+.watchlistMovie img, .favMovie img, .searchMovie img{
   width: 12rem;
 }
 
-.watchlistMovie-title, .favMovie-title {
+.watchlistMovie-title, .favMovie-title, .searchMovie-title {
   text-align: center;
 }
 
-.watchlistMovie-body, .favMovie-body {
+.watchlistMovie-body, .favMovie-body, .searchMovie-body {
   padding: 0 1rem 0.5rem;
 }
 
-.watchlistMovie:hover, .favMovie:hover{
+.watchlistMovie:hover, .favMovie:hover, .searchMovie:hover{
   transform: translateY(-0.5rem);
 }
