@@ -9,9 +9,41 @@
     <div class="sidebar"><%- include('partials/sidebar.ejs') %></div>
 
     <!-- Main Content -->
-    <div class="content-container"></div>
-
+    <div class="content-container">
+      <h2>Favorite Movies</h2>
+      <div class="favRender">
+        <% for (i=0; i < favMovies.length; i++) { %>
+          <div class="favMovie">
+            <% if (favMovies[i].poster_url === "N/A") { %>
+              <img src="img/placeholder.png" alt="<%=favMovies[i].title%>"><br>
+            <% } else {%>
+              <img src="<%=favMovies[i].poster_url%>" alt="<%=favMovies[i].title%>"><br>
+            <% }%>
+              <a href="#" class="movieAnchor" id="<%=favMovies[i].movie_id%>"><%=favMovies[i].title%></a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Movie Information</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="movieInfo"></div>
+          </div>
+          <div class="modal-footer">
+            <!--generated forms and buttons on footer with javascript-->
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Footer -->
     <%- include('partials/footer.ejs') %>
+    <script src="js/script.js"></script>
   </body>
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <%- include('partials/head.ejs') %>
+    <body>
+        <!-- Header -->
+        <%- include('partials/header.ejs') %>
+
+        <!-- Sidebar -->
+        <div class="sidebar"><%- include('partials/sidebar.ejs') %></div>
+
+        <!-- Main Content -->
+        <div class="content-container">
+            <h2>Search Results for "<%=keyword%>"</h2>
+            <div class="searchRender">
+                <% if (Array.isArray(searchMovies) && searchMovies.length === 0) { %>
+                    <h2> Sorry, no matching movies. </h2>
+                <% } else { %>
+                    <% for (i=0; i < searchMovies.length; i++) { %>
+                        <div class="searchMovie">
+                            <% if (searchMovies[i].poster_url === "N/A") { %>
+                                <img src="img/placeholder.png" alt="<%=searchMovies[i].title%>"><br>
+                            <%} else {%>
+                                <img src="<%=searchMovies[i].poster_url%>" alt="<%=searchMovies[i].title%>"><br>
+                            <% } %>
+                            <a href="#" class="movieAnchor" id="<%=searchMovies[i].movie_id%>"><%=searchMovies[i].title%></a>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Movie Information</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="movieInfo"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <!--generated forms and buttons on footer with javascript-->
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+    
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
+        <script src="js/script.js"></script>
+    </body>
+</html>
+      

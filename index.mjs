@@ -8,6 +8,7 @@ import configDotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
 
+
 //  Global Variables
 
 configDotenv.config();  //  allows us to use .env file variables
@@ -160,21 +161,93 @@ app.get("/", authenticateToken, (req, res) => {
   res.render("index", {message, border, userId});
 });
 
+//route to render movies by keywords using the search bar
+app.get("/searchResults", authenticateToken, async (req, res) => {
+  const userId = req.userId;
+  const { message, border } = req.query;
+  let keyword = req.query.search;
+  let sql = `SELECT *
+              FROM movies
+              WHERE title LIKE ?`;
+  let sqlParams = [`%${keyword}%`];
+  const [rows] = await mySQLConnection.query(sql, sqlParams);
+  console.log(rows);
+  res.render("searchResults", {"searchMovies": rows, keyword, message, border, userId});
+});
 
 app.get("/trending", (req, res) => {
   res.render("trending");
 });
 
-app.get("/watchlist", authenticateToken, (req, res) => {
+
+//route to watchlist page will render movie poster and title
+//also has model to display rest of info
+app.get("/watchlist", authenticateToken, async (req, res) => {
   const userId = req.userId;
   const { message, border } = req.query;
-  res.render("watchlist", {message, border, userId});
+  let sql = `SELECT movie_id, poster_url, title
+              FROM watchlists
+              NATURAL JOIN movies 
+              WHERE user_id = ?`
+  const [rows] = await mySQLConnection.query(sql, userId);
+  console.log(rows);
+  res.render("watchlist", {"watchlistMovies": rows, message, border, userId});
 });
 
-app.get("/favorites", authenticateToken, (req, res) => {
+//route to add movies from index to watchlist
+app.post("/addTowatchlist", authenticateToken, async function(req, res) {
+  const userId = req.userId;
+  let movie_id = req.body.btnAddWatchlist;
+  let sqlCheck = `SELECT *
+                  FROM watchlists
+                  WHERE movie_id = ?`;
+  const[rowsCheck] = await mySQLConnection.query(sqlCheck, movie_id);
+  console.log(rowsCheck);
+  if(rowsCheck.length > 0){
+    res.render("index", {"message": "Movie Already In Watchlist!"})
+  }else{
+    let sql = `INSERT INTO watchlists 
+              (user_id, movie_id)
+              VALUES (?, ?)`; 
+    let params = [userId, movie_id];
+    const [rows] = await mySQLConnection.query(sql, params);
+    res.render("index", {"message": "Movie Added To Watchlist!"})
+  }
+});
+
+//route to favorites page will render movie poster and title
+//also has model to display rest of info
+app.get("/favorites", authenticateToken, async(req, res) => {
   const userId = req.userId;
   const { message, border } = req.query;
-  res.render("favorites", {message, border, userId});
+  let sql = `SELECT movie_id, poster_url, title
+              FROM favorites
+              NATURAL JOIN movies 
+              WHERE user_id = ?`
+  const [rows] = await mySQLConnection.query(sql, userId);
+  console.log(rows);
+  res.render("favorites", {"favMovies": rows, message, border, userId});
+});
+
+//route to add movies to favorites from index
+app.post("/addToFavorites", authenticateToken, async function(req, res) {
+  const userId = req.userId;
+  let movie_id = req.body.btnAddFavorite;
+  let sqlCheck = `SELECT *
+                  FROM favorites
+                  WHERE movie_id = ?`;
+  const[rowsCheck] = await mySQLConnection.query(sqlCheck, movie_id);
+  console.log(rowsCheck);
+  if(rowsCheck.length > 0){
+    res.render("index", {"message": "Movie Already In Favorites!"});
+  }else{
+    let sql = `INSERT INTO favorites 
+              (user_id, movie_id)
+              VALUES (?, ?)`;  
+    let params = [userId, movie_id];
+    const [rows] = await mySQLConnection.query(sql, params);
+    res.render("index", {"message": "Movie Added To Favorites!"});
+  }
 });
 
 //  Login routes
