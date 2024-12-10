@@ -155,7 +155,7 @@ app.get("/", authenticateToken, (req, res) => {
   res.render("index", {message, border, userId});
 });
 
-
+//route to render movies by keywords using the search bar
 app.get("/searchResults", authenticateToken, async (req, res) => {
   const userId = req.userId;
   const { message, border } = req.query;
