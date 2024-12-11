@@ -12,11 +12,47 @@
     <div class="content-container">
       <h2>All Movies</h2>
       <%- include('partials/movies.ejs') %>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Movie Information</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="movieInfo"></div>
+            </div>
+            <div class="modal-footer">
+              <!--generated forms and buttons on footer with javascript-->
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
+    <!-- STATUS TOAST -->
+    <div class="toast-container bottom-0 start-50 translate-middle">
+      <div class="toast align-items-center border-0
+            <% if (typeof border != 'undefined') { %>
+                    <%= border %>
+             <% } %>"
+           role="alert" id="toastMessage">
+        <div class="d-flex">
+          <div class="toast-body" id="toastMessage">
+            <% if (typeof message != "undefined") { %>
+              <h3>
+                <%= message %>
+              </h3>
+            <% } %>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
     <!-- Footer -->
     <%- include('partials/footer.ejs') %>
+    
+    <script src="js/script.js"></script>
   </body>
-
-  <script src="js/script.js"></script>
 </html>

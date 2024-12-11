@@ -62,7 +62,6 @@ body {
   align-self: center;
   margin-right: 4em;
   display: flex;
-  gap: 3em;
   font-family: "Inter", sans-serif;
 }
 
@@ -71,7 +70,7 @@ input[type="search"] {
   outline: none;
   border: none;
   font-size: 1rem;
-  padding: 1em;
+  padding: 0.8em;
   width: 300px;
   background-color: #272727;
   color: white;
@@ -112,7 +111,6 @@ input::placeholder {
 
 .login-btn {
   background-color: var(--light-gray);
-
 }
 
 .register-btn {
@@ -121,8 +119,13 @@ input::placeholder {
 
 .login-btn:hover, .register-btn:hover {
   background-color: black;
+  color: white;
   transition: all 0.5s ease-in-out;
+}
 
+.btn-container {
+  display: inline-flex;
+  padding-left: 2em;
 }
 
 .search-btn {
@@ -132,8 +135,8 @@ input::placeholder {
   background-color: #a31e1e;
   color: white;
   font-weight: 500;
+  height: 50px;
   font-size: 1rem;
-
   font-family: "Inter", sans-serif;
 }
 
@@ -159,6 +162,7 @@ input::placeholder {
   gap: 1em;
   padding-top: 0.5em;
   padding-left: 0.5em;
+  padding-bottom: 1em;
   font-size: 1.2rem;
 }
 
@@ -196,10 +200,14 @@ a:hover {
 }
 
 .card {
-  width: 18.75rem;
+  width: 12rem;
   background-color: rgba(255, 255, 255, 0.1);
   transition: 0.3s ease;
   color: white;
+}
+
+.card img{
+  width: 12rem;
 }
 
 .card-title {
@@ -211,5 +219,53 @@ a:hover {
 }
 
 .card:hover {
+  transform: translateY(-0.5rem);
+}
+
+.modal-body {
+  background-color: rgb(201, 196, 195);
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.modal-body img{
+  border-style: solid;
+  border-width: 2px;
+}
+
+.modal-footer {
+  display: inline-flex;
+  text-align: center;
+}
+
+.watchlistRender, .favRender, .searchRender{
+  justify-content: center;
+  background-color: var(--dark-gray);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 0;
+
+}
+
+.watchlistMovie, .favMovie, .searchMovie{
+  width: 12rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.3s ease;
+  color: white;
+}
+
+.watchlistMovie img, .favMovie img, .searchMovie img{
+  width: 12rem;
+}
+
+.watchlistMovie-title, .favMovie-title, .searchMovie-title {
+  text-align: center;
+}
+
+.watchlistMovie-body, .favMovie-body, .searchMovie-body {
+  padding: 0 1rem 0.5rem;
+}
+
+.watchlistMovie:hover, .favMovie:hover, .searchMovie:hover{
   transform: translateY(-0.5rem);
 }
