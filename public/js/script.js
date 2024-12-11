@@ -101,13 +101,17 @@ function renderMovies(movies) {
     const movieCard = document.createElement("div");
     movieCard.className = "card text-bg-secondary";
     if (movie.poster_url === "N/A") {
-      movieCard.innerHTML = `<img src="img/placeholder.png" alt="${movie.title}">`;
+      movieCard.innerHTML = `<a href="#" class="movieAnchor" id="${movie.movie_id}">
+                                <img src="img/placeholder.png" alt="${movie.title}">${movie.title}
+                                </a>`;
     } else {
-      movieCard.innerHTML = `<img src="${movie.poster_url}" alt="${movie.title}">`;
+      movieCard.innerHTML = `<a href="#" class="movieAnchor" id="${movie.movie_id}">
+                                <img src="${movie.poster_url}" alt="${movie.title}">${movie.title}
+                                </a>`;
     }
 
    //make movie titles clickable
-    movieCard.innerHTML += `<a href="#" class="movieAnchor" id="${movie.movie_id}">${movie.title}</a>`;
+   //  movieCard.innerHTML += `<a href="#" class="movieAnchor" id="${movie.movie_id}">${movie.title}</a>`;
     moviesContainer.appendChild(movieCard);
 
   });
