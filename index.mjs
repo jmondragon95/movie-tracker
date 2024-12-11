@@ -45,60 +45,59 @@ async function authenticateToken(req, res, next) {
       const accessTokenPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
       const userId = accessTokenPayload.userId;
       req.userId = userId;
-      next();
+      return next();
     } catch (error) {
       //  IF TOKEN IS EXPIRED, THEN USE REFRESH TOKEN TO RETRIEVE NEW (ACCESS AND REFRESH) TOKENS
       if (error.name === 'TokenExpiredError') {
-        //  RETRIEVE REFRESH TOKEN FROM REQUEST COOKIES
-        const refreshToken = req.cookies.refreshToken;
-        if (refreshToken) {
-          //  REFRESH TOKEN IS FOUND, LETS TRY VERIFYING IT (NOT USED AND IS VALID)
-          try {
-            //  VERIFIES REFRESH TOKEN AND STORES PAYLOAD IN VARIABLE
-            const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-            //  LET US VERIFY THAT THIS REFRESH TOKEN HASN'T BEEN USED ALREADY.
-            if (await verifyRefreshToken(refreshToken)) {
-              const userId = refreshTokenPayload.userId;
-              //  RETURNS ARRAY [ACCESS TOKEN, REFRESH TOKEN]
-              const newTokens = await generateNewTokens(userId);
-              const newAccessToken = newTokens[0];
-              const newRefreshToken = newTokens[1];
-              //  SETTING ACCESS/REFRESH TOKEN IN COOKIES
-              res.cookie('accessToken', newAccessToken, {
-                httpOnly: true,
-                maxAge: 1000 * 60 * 60
-              });
-              res.cookie('refreshToken', newRefreshToken, {
-                httpOnly: true,
-                maxAge: 1000 * 60 * 60 * 24 * 30
-              });
-              req.userId = userId;
-              return next();
-            } else {
-              console.log('line 68: verifyRefreshToken returned false');
-            }
-          } catch (error) {
-            console.log('Error occurred while verifying refresh token', error);
-          }
-        } else {
-          //  IF REFRESH TOKEN IS NOT FOUND, REDIRECT TO LOGIN PAGE
-          console.log('No refresh token');
-        }
+
 
       } else {
         console.log('error with token verification:', error);
       }
       console.log('clearing cookies');
-      //  CLEARING COOKIES
-      res.clearCookie('accessToken', {httpOnly: true});
-      res.clearCookie('refreshToken', {httpOnly: true});
-      return res.redirect('/login');
+    }
+  }
+
+  //  RETRIEVE REFRESH TOKEN FROM REQUEST COOKIES
+  const refreshToken = req.cookies.refreshToken;
+  if (refreshToken) {
+    //  REFRESH TOKEN IS FOUND, LETS TRY VERIFYING IT (NOT USED AND IS VALID)
+    try {
+      //  VERIFIES REFRESH TOKEN AND STORES PAYLOAD IN VARIABLE
+      const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      //  LET US VERIFY THAT THIS REFRESH TOKEN HASN'T BEEN USED ALREADY.
+      if (await verifyRefreshToken(refreshToken)) {
+        const userId = refreshTokenPayload.userId;
+        //  RETURNS ARRAY [ACCESS TOKEN, REFRESH TOKEN]
+        const newTokens = await generateNewTokens(userId);
+        const newAccessToken = newTokens[0];
+        const newRefreshToken = newTokens[1];
+        //  SETTING ACCESS/REFRESH TOKEN IN COOKIES
+        res.cookie('accessToken', newAccessToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60
+        });
+        res.cookie('refreshToken', newRefreshToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 30
+        });
+        req.userId = userId;
+        return next();
+      } else {
+        console.log('line 68: verifyRefreshToken returned false');
+      }
+    } catch (error) {
+      console.log('Error occurred while verifying refresh token', error);
     }
   } else {
-    //  NO ACCESS TOKEN
-    console.log('No access token');
-    return res.redirect('/login');
+    //  IF REFRESH TOKEN IS NOT FOUND, REDIRECT TO LOGIN PAGE
+    console.log('No refresh token');
   }
+  //  Authenticating access and refresh token failed
+  //  Clearing cookies
+  res.clearCookie('accessToken', {httpOnly: true});
+  res.clearCookie('refreshToken', {httpOnly: true});
+  return res.redirect('/login');
 }
 
 async function verifyRefreshToken(refreshToken) {
@@ -166,12 +165,22 @@ app.get("/searchResults", authenticateToken, async (req, res) => {
   const userId = req.userId;
   const { message, border } = req.query;
   let keyword = req.query.search;
+  //  Searching OMDB API
+  const searchPage = 1;
+  let movieSetURL = `https://www.omdbapi.com/?apikey=${apiKey}&s=${keyword}&type=movie&page=${searchPage}`;
+  let movieSetResponse = await fetch(movieSetURL);
+  let movieSetData = await movieSetResponse.json();
+  console.log(movieSetData.Search);
+  if (movieSetData.Search.length > 0) {
+    console.log('results found');
+
+  }
   let sql = `SELECT *
               FROM movies
               WHERE title LIKE ?`;
   let sqlParams = [`%${keyword}%`];
   const [rows] = await mySQLConnection.query(sql, sqlParams);
-  console.log(rows);
+  // console.log(rows);
   res.render("searchResults", {"searchMovies": rows, keyword, message, border, userId});
 });
 

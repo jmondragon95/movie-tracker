@@ -17,12 +17,14 @@
                 <% } else { %>
                     <% for (i=0; i < searchMovies.length; i++) { %>
                         <div class="searchMovie">
-                            <% if (searchMovies[i].poster_url === "N/A") { %>
+                            <a href="#" class="movieAnchor" id="<%=searchMovies[i].movie_id%>">
+                                <% if (searchMovies[i].poster_url === "N/A") { %>
                                 <img src="img/placeholder.png" alt="<%=searchMovies[i].title%>"><br>
-                            <%} else {%>
+                                <%} else {%>
                                 <img src="<%=searchMovies[i].poster_url%>" alt="<%=searchMovies[i].title%>"><br>
-                            <% } %>
-                            <a href="#" class="movieAnchor" id="<%=searchMovies[i].movie_id%>"><%=searchMovies[i].title%></a>
+                                <% } %>
+                                <%=searchMovies[i].title%>
+                            </a>
                         </div>
                     <% } %>
                 <% } %>
