@@ -323,8 +323,54 @@ app.post("/addToFavorites", authenticateToken, async function(req, res) {
   }
 });
 
-//  Login routes
+// Edit Movie
+app.get("/movie/edit", async function (req, res) {
+  let movieId = req.query.movieId; 
 
+  let sql = `SELECT * FROM movies WHERE movie_id = ?`;
+  const [movieRows] = await mySQLConnection.query(sql, [movieId]);
+
+  
+  if (movieRows.length > 0) {
+      res.render("updateMovies", {
+          movieInfo: movieRows[0], 
+      });
+  } else {
+      res.status(404).send("Movie not found");
+  }
+});
+
+app.post("/movie/edit", async function (req, res) {
+  let sql = `
+      UPDATE movies
+      SET title = ?, description = ?, genre = ?, release_date = ?, director = ?
+      WHERE movie_id = ?
+  `;
+
+  let params = [
+      req.body.title,
+      req.body.description,
+      req.body.genre,
+      req.body.release_date,
+      req.body.director,
+      req.body.movie_id, 
+  ];
+
+  const [rows] = await mySQLConnection.query(sql, params);
+
+  const fetchMoviesSql = `SELECT * FROM movies`;
+  const [movies] = await mySQLConnection.query(fetchMoviesSql);
+
+  res.render("index", {
+    message: "Movie successfully updated!",
+    movies: movies,
+  });
+
+});
+
+
+
+//  Login routes
 app.get('/login', (req, res) => {
   const accessToken = req.cookies.accessToken;
   if (accessToken) {
@@ -448,13 +494,13 @@ app.get("/movies", async (req, res) => {
           let imdbRating =
             movieData.Ratings.find(
               (r) => r.Source === "Internet Movie Database"
-            )?.Value || null;
+            )?.Value || "Rating not available.";
           let rottenTomatoesRating =
             movieData.Ratings.find((r) => r.Source === "Rotten Tomatoes")
-              ?.Value || null;
+              ?.Value || "Rating not available.";
           let metacriticRating =
             movieData.Ratings.find((r) => r.Source === "Metacritic")?.Value ||
-            null;
+            "Rating not available.";
          // console.log(movieData.Title, movieData.Released);
           let releaseDate;
           if (movieData.Released === "N/A") {
@@ -513,6 +559,9 @@ app.get("/movies", async (req, res) => {
   res.json(movieRows);
 });
 
+
+
+
 //local api to display movie info on modal
 //sending data in JSON format
 app.get('/api/movies/:id', async (req, res) => {
@@ -522,6 +571,7 @@ app.get('/api/movies/:id', async (req, res) => {
             WHERE movie_id = ?`;           
   let [rows] = await mySQLConnection.query(sql, [movieId]);
   res.send(rows)
+  
 });
 
 app.listen(3000, () => {
