@@ -375,13 +375,13 @@ app.get("/movies", async (req, res) => {
           let imdbRating =
             movieData.Ratings.find(
               (r) => r.Source === "Internet Movie Database"
-            )?.Value || null;
+            )?.Value || "Rating not available.";
           let rottenTomatoesRating =
             movieData.Ratings.find((r) => r.Source === "Rotten Tomatoes")
-              ?.Value || null;
+              ?.Value || "Rating not available.";
           let metacriticRating =
             movieData.Ratings.find((r) => r.Source === "Metacritic")?.Value ||
-            null;
+            "Rating not available.";
          // console.log(movieData.Title, movieData.Released);
           let releaseDate;
           if (movieData.Released === "N/A") {
