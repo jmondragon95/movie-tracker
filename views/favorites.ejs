@@ -14,12 +14,14 @@
       <div class="favRender">
         <% for (i=0; i < favMovies.length; i++) { %>
           <div class="favMovie">
-            <% if (favMovies[i].poster_url === "N/A") { %>
+            <a href="#" class="movieAnchor" id="<%=favMovies[i].movie_id%>">
+              <% if (favMovies[i].poster_url === "N/A") { %>
               <img src="img/placeholder.png" alt="<%=favMovies[i].title%>"><br>
-            <% } else {%>
+              <% } else {%>
               <img src="<%=favMovies[i].poster_url%>" alt="<%=favMovies[i].title%>"><br>
-            <% }%>
-              <a href="#" class="movieAnchor" id="<%=favMovies[i].movie_id%>"><%=favMovies[i].title%></a>
+              <% }%>
+              <%=favMovies[i].title%>
+            </a>
           </div>
         <% } %>
       </div>

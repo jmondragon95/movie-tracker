@@ -14,12 +14,14 @@
       <div class="watchlistRender">
        <% for (i=0; i < watchlistMovies.length; i++) { %>
           <div class="watchlistMovie">
-            <% if (watchlistMovies[i].poster_url === "N/A") { %>
-              <img src="img/placeholder.png" alt="<%=watchlistMovies[i].title%>"><br>
-            <% } else {%>
-              <img src="<%=watchlistMovies[i].poster_url%>" alt="<%=watchlistMovies[i].title%>"><br>
-            <% }%>
-            <a href="#" class="movieAnchor" id="<%=watchlistMovies[i].movie_id%>"><%=watchlistMovies[i].title%></a>
+            <a href="#" class="movieAnchor" id="<%=watchlistMovies[i].movie_id%>">
+                <% if (watchlistMovies[i].poster_url === "N/A") { %>
+                <img src="img/placeholder.png" alt="<%=watchlistMovies[i].title%>"><br>
+                <% } else {%>
+                <img src="<%=watchlistMovies[i].poster_url%>" alt="<%=watchlistMovies[i].title%>"><br>
+                <% }%>
+                <%=watchlistMovies[i].title%>
+            </a>
           </div>
       <% } %>
       </div>
