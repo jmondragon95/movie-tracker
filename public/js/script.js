@@ -164,11 +164,5 @@ async function getMovieInfo() {
                             <input type="hidden" name="movieId" value="${data[0].movie_id}">
                             <button type="submit" class="btn btn-primary">Edit Movie</button>
                             </form>`;
-//   modalFooter.innerHTML += `
-//     <form method="GET" action="/movie/edit">
-//         <input type="hidden" name="movieId" value="${data[0].movie_id}">
-//         <button type="submit" class="btn btn-primary">Edit Movie</button>
-//     </form>
-// `;
 }
 
