@@ -160,5 +160,15 @@ async function getMovieInfo() {
   modalFooter.innerHTML +=`<form method="POST" action="/addToFavorites">
                             <button type="submit" name="btnAddFavorite" id="btnAddFavorite" value="${data[0].movie_id}" >Add to Favorites</button>
                             </form>`;
+  modalFooter.innerHTML += `<form method="GET" action="/movie/edit">
+                            <input type="hidden" name="movieId" value="${data[0].movie_id}">
+                            <button type="submit" class="btn btn-primary">Edit Movie</button>
+                            </form>`;
+//   modalFooter.innerHTML += `
+//     <form method="GET" action="/movie/edit">
+//         <input type="hidden" name="movieId" value="${data[0].movie_id}">
+//         <button type="submit" class="btn btn-primary">Edit Movie</button>
+//     </form>
+// `;
 }
 
