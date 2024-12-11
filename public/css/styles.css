@@ -62,7 +62,6 @@ body {
   align-self: center;
   margin-right: 4em;
   display: flex;
-  gap: 3em;
   font-family: "Inter", sans-serif;
 }
 
@@ -71,7 +70,7 @@ input[type="search"] {
   outline: none;
   border: none;
   font-size: 1rem;
-  padding: 1em;
+  padding: 0.8em;
   width: 300px;
   background-color: #272727;
   color: white;
@@ -120,7 +119,13 @@ input::placeholder {
 
 .login-btn:hover, .register-btn:hover {
   background-color: black;
+  color: white;
   transition: all 0.5s ease-in-out;
+}
+
+.btn-container {
+  display: inline-flex;
+  padding-left: 2em;
 }
 
 .search-btn {
@@ -130,6 +135,7 @@ input::placeholder {
   background-color: #a31e1e;
   color: white;
   font-weight: 500;
+  height: 50px;
   font-size: 1rem;
   font-family: "Inter", sans-serif;
 }
@@ -217,18 +223,43 @@ a:hover {
 }
 
 .modal-body {
-  background-color: rgb(201, 196, 195);
-  font-family: 'Times New Roman', Times, serif;
+  background-color: var(--dark-gray);
+  color: white;
+  font-family: var(--main-font);
 }
 
 .modal-body img{
-  border-style: solid;
-  border-width: 2px;
+  border: 2px solid white;
+  display: block;
+  margin: 0 auto;
 }
+
 
 .modal-footer {
   display: inline-flex;
   text-align: center;
+}
+
+#btnRateMovie {
+  width: 100px;
+}
+
+#btnRateMovie, #btnAddWatchList, #btnAddFavorite {
+  border-radius: 5px;
+  background-color: var(--main-red);
+  color: white;
+  border: none;
+  padding: 0.5em;
+}
+
+#btnAddWatchList {
+  width: 150px;
+}
+
+#btnRateMovie:hover, #btnAddWatchList:hover, #btnAddFavorite:hover {
+  background-color: black;
+  color: white;
+  transition: all 0.5s ease-in-out;
 }
 
 .watchlistRender, .favRender, .searchRender{
@@ -262,4 +293,12 @@ a:hover {
 
 .watchlistMovie:hover, .favMovie:hover, .searchMovie:hover{
   transform: translateY(-0.5rem);
+}
+
+.text-bg-secondary {
+  background-color: #313131!important;
+}
+
+.movieAnchor {
+  text-align: center;
 }
