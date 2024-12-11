@@ -294,3 +294,11 @@ a:hover {
 .watchlistMovie:hover, .favMovie:hover, .searchMovie:hover{
   transform: translateY(-0.5rem);
 }
+
+.text-bg-secondary {
+  background-color: #313131!important;
+}
+
+.movieAnchor {
+  text-align: center;
+}
