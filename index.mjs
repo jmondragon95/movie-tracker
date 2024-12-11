@@ -166,14 +166,78 @@ app.get("/searchResults", authenticateToken, async (req, res) => {
   const { message, border } = req.query;
   let keyword = req.query.search;
   //  Searching OMDB API
-  const searchPage = 1;
+  let searchPage = 1;
   let movieSetURL = `https://www.omdbapi.com/?apikey=${apiKey}&s=${keyword}&type=movie&page=${searchPage}`;
   let movieSetResponse = await fetch(movieSetURL);
   let movieSetData = await movieSetResponse.json();
-  console.log(movieSetData.Search);
-  if (movieSetData.Search.length > 0) {
-    console.log('results found');
+  if (movieSetData.Search) {
+    const searchMovieSQL = 'SELECT * FROM movies WHERE movie_id = ?';
+    let params = [movieSetData.Search.at(0).imdbID];
+    try {
+      let [movieRow] = await mySQLConnection.query(searchMovieSQL, params);
+      console.log('line 179', movieRow);
+      if (movieRow.length === 0) {
+        searchPage++;
+        movieSetResponse = await fetch(movieSetURL);
+        movieSetData = await movieSetResponse.json();
+        console.log('line 184', movieSetData.Search[0]);
+        for (let movie of movieSetData.Search) {
+          //  Retrieve individual movie information
+          let movieUrl = `https://www.omdbapi.com/?apikey=${apiKey}&i=${movie.imdbID}`;
+          let movieResponse = await fetch(movieUrl);
+          let movieData = await movieResponse.json();
+          let imdbRating =
+           movieData.Ratings.find(
+            (r) => r.Source === "Internet Movie Database"
+           )?.Value || null;
+          let rottenTomatoesRating =
+           movieData.Ratings.find((r) => r.Source === "Rotten Tomatoes")
+            ?.Value || null;
+          let metacriticRating =
+           movieData.Ratings.find((r) => r.Source === "Metacritic")?.Value ||
+           null;
+          let releaseDate;
+          if (movieData.Released === "N/A") {
+            releaseDate = null;
+          } else {
+            releaseDate = new Date(movieData.Released)
+             .toISOString()
+             .split("T")[0];
+          }
+          //  Insert movie information into database
+          let insertMovieSQL =
+           "INSERT INTO movies (" +
+           "movie_id, title, actors, genre, runtime, age_rating, imdb_rating," +
+           "rotten_tomatoes_rating, metacritic_rating, poster_url, release_date, director, " +
+           "description) " +
+           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+           "ON DUPLICATE KEY UPDATE " +
+           "title = VALUES(title), actors = VALUES(actors), genre = VALUES(genre), " +
+           "runtime = VALUES(runtime), age_rating = VALUES(age_rating), imdb_rating = VALUES(imdb_rating), " +
+           "rotten_tomatoes_rating = VALUES(rotten_tomatoes_rating), metacritic_rating = VALUES(metacritic_rating), " +
+           "poster_url = VALUES(poster_url), release_date = VALUES(release_date), director = VALUES(director), " +
+           "description = VALUES(description);";
 
+          await mySQLConnection.execute(insertMovieSQL, [
+            movieData.imdbID,
+            movieData.Title,
+            movieData.Actors,
+            movieData.Genre,
+            movieData.Runtime,
+            movieData.Rated,
+            imdbRating,
+            rottenTomatoesRating,
+            metacriticRating,
+            movieData.Poster,
+            releaseDate,
+            movieData.Director,
+            movieData.Plot,
+          ]);
+        }
+      }
+    } catch (error) {
+      console.log('Error occurred while retrieving movie from database', error);
+    }
   }
   let sql = `SELECT *
               FROM movies
@@ -368,7 +432,7 @@ app.get("/movies", async (req, res) => {
     //  console.log("Page:", page);
       // console.log("No movies found in jmondrag_movies");
       //  Retrieve first set of movies from API
-      let movieSetUrl = `https://www.omdbapi.com/?apikey=${apiKey}&s=Batman&type=movie&page=${page}`;
+      let movieSetUrl = `https://www.omdbapi.com/?apikey=${apiKey}&s=Superman&type=movie&page=${page}`;
       let movieSetResponse = await fetch(movieSetUrl);
       let movieSetData = await movieSetResponse.json();
 
