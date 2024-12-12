@@ -12,26 +12,9 @@
     <div class="content-container">
       <h2>All Movies</h2>
       <%- include('partials/movies.ejs') %>
-      
-      <!-- Modal -->
-      <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Movie Information</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div id="movieInfo"></div>
-            </div>
-            <div class="modal-footer">
-              <!--generated forms and buttons on footer with javascript-->
-            </div>
-          </div>
-        </div>
-      </div>
+      <%- include('partials/movieModal.ejs') %>
+      <%- include('partials/commentModal.ejs') %>
     </div>
-
 
     <!-- STATUS TOAST -->
     <div class="toast-container bottom-0 start-50 translate-middle">

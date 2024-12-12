@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/head.ejs') %>
+  <body>
+    <!-- Header -->
+    <%- include('partials/header.ejs') %>
+
+    <!-- Sidebar -->
+    <div class="sidebar"><%- include('partials/sidebar.ejs') %></div>
+    <div class="addCommentCont">
+        <h2>Add A Comment</h2>
+    
+        <div class="commentDisplay">
+            <h2 id="movieTitle"><%=movieInfoRow[0].title%></h2>
+            <img src="<%=movieInfoRow[0].poster_url%>" width="300">
+        </div><br>
+        <form method="POST" action="/addComment">
+  
+            <input type="hidden" name="movie_id" value="<%=movieInfoRow[0].movie_id%>">
+            <scan id="commentUsername">Username:</scan>
+            <input type="text" name="username" value="<%=userInfoRow[0].username%>"readonly><br><br>
+            <scan id="commentComment">Comment:</scan> 
+            <input type="text" name="newComment" size= "50" required><br><br>
+   
+            <button id="submitComment"> Submit Comment</button>
+        </form> 
+
+    <% if (typeof message != "undefined"){ %>
+        <h2><%=message%></h2>
+    <% } %>
+    <br><br>
+    </div>  
+
+    <!-- Footer -->
+    <%- include('partials/footer.ejs') %>
+    
+    <script src="js/script.js"></script>
+  </body>
+</html>
