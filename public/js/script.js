@@ -168,5 +168,40 @@ async function getMovieInfo() {
                             <input type="hidden" name="movieId" value="${data[0].movie_id}">
                             <button type="submit" class="btn btn-primary">Edit Movie</button>
                             </form>`;
+  modalFooter.innerHTML +=`<a href="#" class="commentAnchor" id="${data[0].movie_id}">View Comments</a>`;
+  modalFooter.innerHTML +=`<a href="/addComment?movie_id=${data[0].movie_id}" name="addComment" id="addCommentAnchor">Add Comment</a></div>`;
+                             
+  //bind event lisneter to commentAnchor
+  const commentLink = document.querySelector(`#${data[0].movie_id}.commentAnchor`);
+  if (commentLink) {
+      commentLink.addEventListener("click", getComments);
+  }
 }
 
+async function getComments(){
+  var myModal = new bootstrap.Modal(document.getElementById('commentModal'));
+  myModal.show();
+  let url = `/api/comments/${this.id}`; 
+  let response = await fetch(url);
+  let data = await response.json();
+  console.log(data);
+  let modalTitle = document.querySelector("#commentModalLabel");
+  let movieComments = document.querySelector("#movieComments");
+  
+  if (data.length === 0){
+    modalTitle.innerHTML="";
+    movieComments.innerHTML= `<div><strong>Sorry, no Comments for this movie! </div>`;
+  }else{
+    modalTitle.innerHTML= `Comments for ${data[0].title}`;
+    movieComments.innerHTML= "";
+    let commentAccum = "";
+
+    for (let i = 0; i < data.length; i++){ 
+      commentAccum += `<div class ="comment">
+                        <div><strong>Username: </strong> ${data[i].username} </div>
+                        <div><strong>Comment: </strong> ${data[i].comment}</div><hr>
+                      </div>`;
+    }
+  movieComments.innerHTML = commentAccum;
+  }
+}

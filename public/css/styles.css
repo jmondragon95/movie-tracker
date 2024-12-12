@@ -237,6 +237,7 @@ a:hover {
 
 .modal-footer {
   display: inline-flex;
+  justify-content: space-evenly;
   text-align: center;
 }
 
@@ -244,7 +245,7 @@ a:hover {
   width: 100px;
 }
 
-#btnRateMovie, #btnAddWatchList, #btnAddFavorite {
+#btnRateMovie, #btnAddWatchList, #btnAddFavorite, #btnviewComments, #addCommentAnchor, .commentAnchor{
   border-radius: 5px;
   background-color: var(--main-red);
   color: white;
@@ -256,7 +257,7 @@ a:hover {
   width: 150px;
 }
 
-#btnRateMovie:hover, #btnAddWatchList:hover, #btnAddFavorite:hover {
+#btnRateMovie:hover, #btnAddWatchList:hover, #btnAddFavorite:hover, #btnviewComments:hover{
   background-color: black;
   color: white;
   transition: all 0.5s ease-in-out;
@@ -305,4 +306,20 @@ a:hover {
 
 .update-title {
   color: white;
+}
+
+.addCommentCont{
+  text-align: center;
+}
+
+#commentUsername, #commentComment{
+    color: white;
+}
+
+.addCommentCont-h2{
+  text-align: center;
+}
+
+#movieTitle{
+text-align: center;
 }

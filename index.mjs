@@ -559,9 +559,6 @@ app.get("/movies", async (req, res) => {
   res.json(movieRows);
 });
 
-
-
-
 //local api to display movie info on modal
 //sending data in JSON format
 app.get('/api/movies/:id', async (req, res) => {
@@ -573,6 +570,56 @@ app.get('/api/movies/:id', async (req, res) => {
   res.send(rows)
   
 });
+
+app.get('/api/comments/:id', async(req, res) => {
+  let movie_id = req.params.id;
+  let sql = `SELECT title, username, comment
+              FROM  comments
+              NATURAL JOIN movies as m 
+              WHERE movie_id = ?`;
+  const [rows] = await mySQLConnection.query(sql, movie_id);
+  console.log(rows);
+  res.send(rows);
+});
+
+app.get('/addComment', authenticateToken, async (req, res) => {
+  let movie_id = req.query.movie_id;
+  const userId = req.userId;
+  let sql = `SELECT username
+              FROM users
+              WHERE user_id = ?`;
+  const [row] = await mySQLConnection.query(sql, userId);
+  console.log(row);
+  let sql2 = `SELECT title, poster_url, movie_id
+              FROM movies
+              WHERE movie_id = ?`
+  const [row2] = await mySQLConnection.query(sql2, movie_id);
+  console.log(row2);
+  res.render("addComment", {"userInfoRow": row, "movieInfoRow": row2});
+});
+
+app.post('/addComment', authenticateToken, async (req, res)=>{
+  let movie_id = req.body.movie_id;
+  const userId = req.userId;
+  let sql = `SELECT username
+              FROM users
+              WHERE user_id = ?`;
+  const [row] = await mySQLConnection.query(sql, userId);
+  console.log(row);
+  let sql2 = `SELECT title, poster_url, movie_id
+              FROM movies
+              WHERE movie_id = ?`;
+  const [row2] = await mySQLConnection.query(sql2, movie_id);
+  let username = req.body.username;
+  let newComment = req.body.newComment;
+  let sql3 = `INSERT INTO comments
+              (movie_id, username, comment)
+              VALUES(?, ?, ?)`;
+  let params = [movie_id, username, newComment];
+  const [commentRows] = await mySQLConnection.query(sql3, params);
+  console.log(commentRows);
+  res.render("addComment", {"userInfoRow": row, "movieInfoRow": row2, "message": "Comment Added!"});
+})
 
 app.listen(3000, () => {
   console.log("server started");
