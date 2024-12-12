@@ -106,14 +106,14 @@ async function verifyRefreshToken(refreshToken) {
   //  SQL TO FIND REFRESH TOKEN IN DATABASE
   const retrieveRefreshTokenSQL = 'SELECT * FROM refresh_tokens WHERE refresh_token = ? AND is_used = FALSE';
   try {
-    const [refreshTokenFromDB] = await sqlConnection.query(retrieveRefreshTokenSQL, [hashedRefreshToken]);
+    const [refreshTokenFromDB] = await mySQLConnection.query(retrieveRefreshTokenSQL, [hashedRefreshToken]);
     console.log('line 91:', refreshTokenFromDB);
     if (refreshTokenFromDB.length > 0) {
       //  SET REFRESH TOKEN AS USED IN DATABASE
       const setRefreshTokenUsedSQL = 'UPDATE refresh_tokens SET is_used = TRUE WHERE refresh_token = ?';
       try {
         console.log('line 100: updating refresh token in db', hashedRefreshToken);
-        await sqlConnection.query(setRefreshTokenUsedSQL, [hashedRefreshToken]);
+        await mySQLConnection.query(setRefreshTokenUsedSQL, [hashedRefreshToken]);
         return true;
       } catch (error) {
         console.log('line 102', error);
@@ -140,7 +140,7 @@ async function generateNewTokens(userId) {
   const insertRefreshTokenSQL = 'INSERT INTO refresh_tokens (user_id, refresh_token) ' +
       'VALUES (?, ?)';
   try {
-    await sqlConnection.query(insertRefreshTokenSQL, [userId, hashedRefreshToken]);
+    await mySQLConnection.query(insertRefreshTokenSQL, [userId, hashedRefreshToken]);
   } catch (error) {
     console.log('generateNewTokens, Error occurred while inserting hashed refresh token:', error);
     return [];
