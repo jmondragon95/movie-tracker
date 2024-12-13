@@ -16,37 +16,37 @@
             <input type="hidden" name="movie_id" value="<%= movieInfo.movie_id %>">
 
             <!-- Title -->
-            <div class="mb-3">
+            <div class="form-field">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="title" value="<%= movieInfo.title %>" required>
             </div>
 
             <!-- Description -->
-            <div class="mb-3">
+            <div class="form-field">
                 <label for="description" class="form-label">Description</label>
                 <textarea class="form-control" id="description" name="description" rows="3" required><%= movieInfo.description %></textarea>
             </div>
 
             <!-- Genre -->
-            <div class="mb-3">
+            <div class="form-field">
                 <label for="genre" class="form-label">Genre</label>
                 <input type="text" class="form-control" id="genre" name="genre" value="<%= movieInfo.genre %>" required>
             </div>
 
             <!-- Release Date -->
-            <div class="mb-3">
+            <div class="form-field">
                 <label for="release_date" class="form-label">Release Date</label>
                 <input type="date" class="form-control" id="release_date" name="release_date" value="<%= movieInfo.release_date.toISOString().split('T')[0] %>" required>
             </div>
 
             <!-- Director -->
-            <div class="mb-3">
+            <div class="form-field">
                 <label for="director" class="form-label">Director</label>
                 <input type="text" class="form-control" id="director" name="director" value="<%= movieInfo.director %>" required>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Update Movie</button>
+            <button type="submit" class="btn btn-primary" id="updateButton">Update Movie</button>
         </form>
     </div>
 
