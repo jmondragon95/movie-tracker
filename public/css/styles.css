@@ -27,6 +27,7 @@ body {
     "sidebar content content";
   background-color: #222222;
   font-family: "Inter", sans-serif;
+  margin-bottom: 90px;
 }
 
 .header-container {
@@ -363,6 +364,7 @@ footer {
   background-color: var(--main-red);
   margin-top: 1em;
   border: none;
+  margin-bottom: 1.5em;
 }
 
 #updateButton:hover {
@@ -376,4 +378,31 @@ footer {
 }
 .form-label {
   color: white;
+}
+
+.form-ratings {
+  display: flex;
+}
+
+.form-rating {
+  padding-top: 1em;
+  display: flex;
+  gap: 1em;
+}
+
+.rating-title {
+  padding-right: 1em;
+}
+
+.rating1 {
+  color: white;
+}
+
+.form-check-label {
+  color: white;
+  padding-right: 1em;
+}
+
+.form-label {
+  padding-right: 1em;
 }
