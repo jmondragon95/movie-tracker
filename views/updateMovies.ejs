@@ -8,7 +8,7 @@
     <!-- Sidebar -->
     <div class="sidebar"><%- include('partials/sidebar.ejs') %></div>
 
-    <div class="container mt-5">
+    <div class="container-field">
         <h1 class="update-title">Update Movie</h1>
         <form method="POST" action="/movie/edit">
             <input type="hidden" name="movie_id" value="<%= movieInfo.movie_id %>">
@@ -28,7 +28,7 @@
             <!-- Genre -->
             <div class="form-field">
                 <label for="genre" class="form-label">Genre</label>
-                <select class="form-control" id="genre" name="genre" required>
+                <select class="form-select" id="genre" name="genre" required>
                     <option value="Action" <%= movieInfo.genre === 'Action' ? 'selected' : '' %>>Action</option>
                     <option value="Comedy" <%= movieInfo.genre === 'Comedy' ? 'selected' : '' %>>Comedy</option>
                     <option value="Drama" <%= movieInfo.genre === 'Drama' ? 'selected' : '' %>>Drama</option>
@@ -47,6 +47,66 @@
             <div class="form-field">
                 <label for="director" class="form-label">Director</label>
                 <input type="text" class="form-control" id="director" name="director" value="<%= movieInfo.director %>" required>
+            </div>
+
+            <!-- User Rating -->
+            <div class="form-field">
+                <label class="form-label">User Rating</label>
+                <div class="form-check">
+                    <input 
+                        type="radio" 
+                        id="rating1" 
+                        name="user_rating" 
+                        value="1" 
+                        class="form-check-input" 
+                        <%= movieInfo.user_rating === 1 ? 'checked' : '' %>
+                    >
+                    <label for="rating1" class="form-check-label">1</label>
+                </div>
+                <div class="form-check">
+                    <input 
+                        type="radio" 
+                        id="rating2" 
+                        name="user_rating" 
+                        value="2" 
+                        class="form-check-input" 
+                        <%= movieInfo.user_rating === 2 ? 'checked' : '' %>
+                    >
+                    <label for="rating2" class="form-check-label">2</label>
+                </div>
+                <div class="form-check">
+                    <input 
+                        type="radio" 
+                        id="rating3" 
+                        name="user_rating" 
+                        value="3" 
+                        class="form-check-input" 
+                        <%= movieInfo.user_rating === 3 ? 'checked' : '' %>
+                    >
+                    <label for="rating3" class="form-check-label">3</label>
+                </div>
+                <div class="form-check">
+                    <input 
+                        type="radio" 
+                        id="rating4" 
+                        name="user_rating" 
+                        value="4" 
+                        class="form-check-input" 
+                        <%= movieInfo.user_rating === 4 ? 'checked' : '' %>
+                    >
+                    <label for="rating4" class="form-check-label">4</label>
+                </div>
+                <div class="form-check">
+                    <input 
+                        type="radio" 
+                        id="rating5" 
+                        name="user_rating" 
+                        value="5" 
+                        class="form-check-input" 
+                        <%= movieInfo.user_rating === 5 ? 'checked' : '' %>
+                    >
+                    <label for="rating5" class="form-check-label">5</label>
+                </div>
             </div>
 
             <!-- Submit Button -->
