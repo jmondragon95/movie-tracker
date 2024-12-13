@@ -8,11 +8,9 @@
     <!-- Sidebar -->
     <div class="sidebar"><%- include('partials/sidebar.ejs') %></div>
 
-    
     <div class="container mt-5">
         <h1 class="update-title">Update Movie</h1>
         <form method="POST" action="/movie/edit">
-            
             <input type="hidden" name="movie_id" value="<%= movieInfo.movie_id %>">
 
             <!-- Title -->
@@ -30,7 +28,13 @@
             <!-- Genre -->
             <div class="mb-3">
                 <label for="genre" class="form-label">Genre</label>
-                <input type="text" class="form-control" id="genre" name="genre" value="<%= movieInfo.genre %>" required>
+                <select class="form-control" id="genre" name="genre" required>
+                    <option value="Action" <%= movieInfo.genre === 'Action' ? 'selected' : '' %>>Action</option>
+                    <option value="Comedy" <%= movieInfo.genre === 'Comedy' ? 'selected' : '' %>>Comedy</option>
+                    <option value="Drama" <%= movieInfo.genre === 'Drama' ? 'selected' : '' %>>Drama</option>
+                    <option value="Horror" <%= movieInfo.genre === 'Horror' ? 'selected' : '' %>>Horror</option>
+                    <option value="Romance" <%= movieInfo.genre === 'Romance' ? 'selected' : '' %>>Romance</option>
+                </select>
             </div>
 
             <!-- Release Date -->
@@ -50,10 +54,8 @@
         </form>
     </div>
 
-    
     <!-- Footer -->
     <%- include('partials/footer.ejs') %>
-    
     <script src="js/script.js"></script>
   </body>
 </html>
