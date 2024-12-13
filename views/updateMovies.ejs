@@ -50,7 +50,9 @@
         </form>
     </div>
 
-    
+    <% if (typeof message != "undefined"){ %>
+        <h2><%=message%></h2>
+    <% } %>
     <!-- Footer -->
     <%- include('partials/footer.ejs') %>
     

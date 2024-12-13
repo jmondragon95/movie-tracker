@@ -149,16 +149,15 @@ async function getMovieInfo() {
   movieInfo.innerHTML += `<div><strong>Rated: </strong>${data[0].age_rating} </div>`;
   movieInfo.innerHTML += `<div><strong>Actors: </strong>${data[0].actors} </div>`;
   movieInfo.innerHTML += `<div><strong>Runtime: </strong>${data[0].runtime} </div>`;
+  movieInfo.innerHTML += `<div><strong>Genre: </strong>${data[0].genre} </div>`;
   movieInfo.innerHTML += `<div><strong>Released Date: </strong>${releasedOn.toLocaleDateString()} </div>`;
   movieInfo.innerHTML += `<div><strong>Director: </strong>${data[0].director} </div>`;
   movieInfo.innerHTML += `<div><strong>Description: </strong>${data[0].description} </div>`;
   movieInfo.innerHTML += `<div><strong>IMDb-Rating: </strong>${data[0].imdb_rating} </div>`;
   movieInfo.innerHTML += `<div><strong>Rotten-Tomatoes-Rating: </strong>${data[0].rotten_tomatoes_rating} </div>`;
   let modalFooter = document.querySelector(".modal-footer");
-  modalFooter.innerHTML = `<form method="POST" action="/rateMovie">
-                              <button type="submit" name="btnRateMovie"  id="btnRateMovie" value="${data[0].movie_id}" >Rate</button>
-                              </form>`;
-  modalFooter.innerHTML +=`<form method="POST" action="/addToWatchlist">
+
+  modalFooter.innerHTML =`<form method="POST" action="/addToWatchlist">
                               <button type="submit" name="btnAddWatchlist" id="btnAddWatchList" value="${data[0].movie_id}" >Add to Watchlist</button>
                               </form>`;
   modalFooter.innerHTML +=`<form method="POST" action="/addToFavorites">
