@@ -235,7 +235,6 @@ a:hover {
   margin: 0 auto;
 }
 
-
 .modal-footer {
   display: inline-flex;
   justify-content: space-evenly;
@@ -252,6 +251,18 @@ a:hover {
   color: white;
   border: none;
   padding: 0.5em;
+}
+
+#addCommentAnchor:hover {
+  background-color: black;
+  color: white;
+  transition: all 0.5s ease-in-out;
+}
+
+.commentAnchor:hover {
+  background-color: black;
+  color: white;
+  transition: all 0.5s ease-in-out;
 }
 
 #btnAddWatchList {
@@ -346,4 +357,23 @@ footer {
 #disclaimer {
   color: gray;
   margin: 10px;
+}
+
+#updateButton {
+  background-color: var(--main-red);
+  margin-top: 1em;
+  border: none;
+}
+
+#updateButton:hover {
+  background-color: black;
+  color: white;
+  transition: all 0.5s ease-in-out;
+
+}
+.form-field {
+  padding-top: 1.5em;
+}
+.form-label {
+  color: white;
 }
