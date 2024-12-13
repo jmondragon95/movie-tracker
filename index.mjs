@@ -248,11 +248,6 @@ app.get("/searchResults", authenticateToken, async (req, res) => {
   res.render("searchResults", {"searchMovies": rows, keyword, message, border, userId});
 });
 
-app.get("/trending", (req, res) => {
-  res.render("trending");
-});
-
-
 //route to watchlist page will render movie poster and title
 //also has model to display rest of info
 app.get("/watchlist", authenticateToken, async (req, res) => {
@@ -324,7 +319,9 @@ app.post("/addToFavorites", authenticateToken, async function(req, res) {
 });
 
 // Edit Movie
-app.get("/movie/edit", async function (req, res) {
+app.get("/movie/edit", authenticateToken, async function (req, res) {
+  const userId = req.userId;
+  const { message, border } = req.query;
   let movieId = req.query.movieId; 
 
   let sql = `SELECT * FROM movies WHERE movie_id = ?`;
@@ -333,14 +330,16 @@ app.get("/movie/edit", async function (req, res) {
   
   if (movieRows.length > 0) {
       res.render("updateMovies", {
-          movieInfo: movieRows[0], 
+          movieInfo: movieRows[0], message, border, userId
       });
   } else {
       res.status(404).send("Movie not found");
   }
 });
 
-app.post("/movie/edit", async function (req, res) {
+app.post("/movie/edit", authenticateToken, async function (req, res) {
+  const userId = req.userId;
+  const { message, border } = req.query;
   let sql = `
       UPDATE movies
       SET title = ?, description = ?, genre = ?, release_date = ?, director = ?
@@ -362,13 +361,10 @@ app.post("/movie/edit", async function (req, res) {
   const [movies] = await mySQLConnection.query(fetchMoviesSql);
 
   res.render("index", {
-    message: "Movie successfully updated!",
-    movies: movies,
+    message: "Movie successfully updated!", message, border, userId
   });
 
 });
-
-
 
 //  Login routes
 app.get('/login', (req, res) => {
