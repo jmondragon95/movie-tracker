@@ -155,6 +155,7 @@ async function getMovieInfo() {
   movieInfo.innerHTML += `<div><strong>Description: </strong>${data[0].description} </div>`;
   movieInfo.innerHTML += `<div><strong>IMDb-Rating: </strong>${data[0].imdb_rating} </div>`;
   movieInfo.innerHTML += `<div><strong>Rotten-Tomatoes-Rating: </strong>${data[0].rotten_tomatoes_rating} </div>`;
+  movieInfo.innerHTML += `<div><strong>User Rating: </strong>${data[0].user_rating} </div>`;
   let modalFooter = document.querySelector(".modal-footer");
 
   modalFooter.innerHTML =`<form method="POST" action="/addToWatchlist">

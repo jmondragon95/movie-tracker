@@ -342,7 +342,7 @@ app.post("/movie/edit", authenticateToken, async function (req, res) {
   const { message, border } = req.query;
   let sql = `
       UPDATE movies
-      SET title = ?, description = ?, genre = ?, release_date = ?, director = ?
+      SET title = ?, description = ?, genre = ?, release_date = ?, director = ?, user_rating = ?
       WHERE movie_id = ?
   `;
 
@@ -351,8 +351,9 @@ app.post("/movie/edit", authenticateToken, async function (req, res) {
       req.body.description,
       req.body.genre,
       req.body.release_date,
-      req.body.director,
-      req.body.movie_id, 
+      req.body.director, 
+      req.body.user_rating,
+      req.body.movie_id
   ];
 
   const [rows] = await mySQLConnection.query(sql, params);
