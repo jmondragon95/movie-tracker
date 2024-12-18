@@ -256,7 +256,7 @@ app.get("/watchlist", authenticateToken, async (req, res) => {
   let sql = `SELECT movie_id, poster_url, title
               FROM watchlists
               NATURAL JOIN movies 
-              WHERE user_id = ?`
+              WHERE user_id = ?`;
   const [rows] = await mySQLConnection.query(sql, userId);
   console.log(rows);
   res.render("watchlist", {"watchlistMovies": rows, message, border, userId});
@@ -268,8 +268,9 @@ app.post("/addTowatchlist", authenticateToken, async function(req, res) {
   let movie_id = req.body.btnAddWatchlist;
   let sqlCheck = `SELECT *
                   FROM watchlists
-                  WHERE movie_id = ?`;
-  const[rowsCheck] = await mySQLConnection.query(sqlCheck, movie_id);
+                  WHERE movie_id = ? AND user_id = ?`;
+  let checkParams = [movie_id, userId];
+  const[rowsCheck] = await mySQLConnection.query(sqlCheck, checkParams);
   console.log(rowsCheck);
   if(rowsCheck.length > 0){
     res.render("index", {"message": "Movie Already In Watchlist!"})
@@ -291,9 +292,8 @@ app.get("/favorites", authenticateToken, async(req, res) => {
   let sql = `SELECT movie_id, poster_url, title
               FROM favorites
               NATURAL JOIN movies 
-              WHERE user_id = ?`
+              WHERE user_id = ?`;
   const [rows] = await mySQLConnection.query(sql, userId);
-  console.log(rows);
   res.render("favorites", {"favMovies": rows, message, border, userId});
 });
 
@@ -303,8 +303,9 @@ app.post("/addToFavorites", authenticateToken, async function(req, res) {
   let movie_id = req.body.btnAddFavorite;
   let sqlCheck = `SELECT *
                   FROM favorites
-                  WHERE movie_id = ?`;
-  const[rowsCheck] = await mySQLConnection.query(sqlCheck, movie_id);
+                  WHERE movie_id = ? AND user_id = ?`;
+  let checkParams = [userId, movie_id];
+  const [rowsCheck] = await mySQLConnection.query(sqlCheck, checkParams);
   console.log(rowsCheck);
   if(rowsCheck.length > 0){
     res.render("index", {"message": "Movie Already In Favorites!"});
